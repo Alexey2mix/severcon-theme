@@ -4,46 +4,90 @@
  *
  * @package severcon
  */
+
+// Получаем настройки поста
+$has_thumbnail = has_post_thumbnail();
+$post_class = $has_thumbnail ? 'post-item has-thumbnail' : 'post-item no-thumbnail';
 ?>
 
-<article id="post-<?php the_ID(); ?>" <?php post_class('news-item'); ?>>
+<article id="post-<?php the_ID(); ?>" <?php post_class($post_class); ?>>
     
-    <?php if (has_post_thumbnail()) : ?>
-        <div class="post-thumbnail">
-            <a href="<?php the_permalink(); ?>">
-                <?php the_post_thumbnail('severcon-thumbnail', array('class' => 'img-fluid')); ?>
+    <?php if ($has_thumbnail) : ?>
+        <div class="post-thumbnail-wrapper">
+            <a href="<?php the_permalink(); ?>" class="post-thumbnail-link">
+                <?php 
+                the_post_thumbnail('severcon-thumbnail', array(
+                    'class' => 'post-thumbnail-img',
+                    'loading' => 'lazy',
+                    'alt' => get_the_title()
+                )); 
+                ?>
+                <div class="thumbnail-overlay">
+                    <span class="read-more-icon">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
             </a>
+            
+            <div class="post-date-badge">
+                <span class="post-day"><?php echo get_the_date('d'); ?></span>
+                <span class="post-month"><?php echo get_the_date('M'); ?></span>
+            </div>
         </div>
     <?php endif; ?>
     
-    <div class="entry-content">
-        <header class="entry-header">
-            <?php the_title('<h2 class="entry-title"><a href="' . esc_url(get_permalink()) . '" rel="bookmark">', '</a></h2>'); ?>
-            
-            <div class="entry-meta">
-                <span class="posted-on">
-                    <i class="far fa-calendar"></i>
-                    <time datetime="<?php echo esc_attr(get_the_date('c')); ?>">
-                        <?php echo esc_html(get_the_date()); ?>
-                    </time>
-                </span>
-                
-                <?php if (!post_password_required() && (comments_open() || get_comments_number())) : ?>
-                    <span class="comments-link">
-                        <i class="far fa-comments"></i>
-                        <?php comments_popup_link('0', '1', '%'); ?>
-                    </span>
-                <?php endif; ?>
-            </div>
-        </header>
+    <div class="post-content-wrapper">
         
-        <div class="entry-excerpt">
-            <?php the_excerpt(); ?>
+        <div class="post-categories">
+            <?php
+            $categories = get_the_category();
+            if (!empty($categories)) {
+                echo '<a href="' . esc_url(get_category_link($categories[0]->term_id)) . '" class="post-category">' . esc_html($categories[0]->name) . '</a>';
+            }
+            ?>
         </div>
         
-        <footer class="entry-footer">
-            <a href="<?php the_permalink(); ?>" class="read-more">
-                Читать далее <i class="fas fa-arrow-right"></i>
+        <header class="post-header">
+            <?php 
+            the_title(
+                '<h3 class="post-title"><a href="' . esc_url(get_permalink()) . '" rel="bookmark">',
+                '</a></h3>'
+            );
+            ?>
+        </header>
+        
+        <div class="post-excerpt">
+            <?php 
+            // Обрезаем excerpt до 100 слов
+            $excerpt = get_the_excerpt();
+            if (str_word_count($excerpt) > 25) {
+                $excerpt = wp_trim_words($excerpt, 25, '...');
+            }
+            echo '<p>' . $excerpt . '</p>';
+            ?>
+        </div>
+        
+        <footer class="post-footer">
+            <div class="post-meta">
+                <div class="post-author">
+                    <i class="far fa-user"></i>
+                    <span><?php the_author(); ?></span>
+                </div>
+                
+                <div class="post-comments">
+                    <i class="far fa-comment"></i>
+                    <span><?php comments_number('0', '1', '%'); ?></span>
+                </div>
+                
+                <div class="post-time">
+                    <i class="far fa-clock"></i>
+                    <span><?php echo reading_time(); ?></span>
+                </div>
+            </div>
+            
+            <a href="<?php the_permalink(); ?>" class="post-read-more">
+                <span>Подробнее</span>
+                <i class="fas fa-arrow-right"></i>
             </a>
         </footer>
     </div>
