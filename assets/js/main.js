@@ -103,37 +103,40 @@
         // Инициализация корзины
         initCart();
         
-        // Автоматическое копирование стилей с кнопки "Заявка на оборудование"
-        $(window).on('load', function() {
-                copyButtonStyles();
-            });
         
     }); // document ready
     
     /**
      * Load More functionality для новостей
      */
+    /**
+ * Load More functionality для новостей - CSS версия
+ */
     function initLoadMore() {
         var $loadMoreBtn = $('#load-more-news');
         
-        if (!$loadMoreBtn.length) return;
+        if (!$loadMoreBtn.length) {
+            console.log('Load More button not found');
+            return;
+        }
         
         $loadMoreBtn.on('click', function(e) {
             e.preventDefault();
             
             var $button = $(this);
-            var $btnText = $button.find('.button-text');
-            var $spinner = $button.find('.button-spinner');
             var $messageDiv = $button.siblings('.load-more-message');
             
             var currentPage = parseInt($button.data('page'));
             var maxPages = parseInt($button.data('max-pages'));
             var nextPage = currentPage + 1;
             
-            // Показываем состояние загрузки
-            $btnText.hide();
-            $spinner.show();
-            $button.prop('disabled', true).css('opacity', '0.7');
+            // Показываем состояние загрузки через CSS класс
+            $button.addClass('loading').prop('disabled', true);
+            
+            // Скрываем предыдущие сообщения
+            if ($messageDiv.length) {
+                $messageDiv.hide().empty();
+            }
             
             // Собираем данные для AJAX
             var ajaxData = {
@@ -162,25 +165,31 @@
                 dataType: 'json',
                 success: function(response) {
                     if (response.success) {
-                        // ДОБАВЛЯЕМ НОВЫЕ ПОСТЫ НА СТРАНИЦУ
+                        // Добавляем новые посты
                         var $newsGrid = $('#news-grid');
                         if ($newsGrid.length) {
-                            // Добавляем HTML с новыми постами
-                            $newsGrid.append(response.data.html);
+                            var $newContent = $(response.data.html);
+                            
+                            // Добавляем класс для анимации
+                            $newContent.addClass('newly-loaded');
+                            
+                            // Добавляем в контейнер
+                            $newsGrid.append($newContent);
                             
                             // Анимация появления
-                            var $newItems = $newsGrid.children('.news-archive-item').slice(-response.data.html.split('news-archive-item').length + 1);
-                            $newItems.css({
-                                'opacity': '0',
-                                'transform': 'translateY(20px)'
-                            });
-                            
                             setTimeout(function() {
-                                $newItems.animate({
-                                    'opacity': '1',
-                                    'transform': 'translateY(0)'
-                                }, 300);
-                            }, 50);
+                                $newContent.removeClass('newly-loaded').addClass('loaded');
+                                
+                                // Прокручиваем немного к новым элементам
+                                if ($newContent.length > 0) {
+                                    var firstNewItem = $newContent.first();
+                                    var scrollPosition = firstNewItem.offset().top - 100;
+                                    
+                                    $('html, body').animate({
+                                        scrollTop: scrollPosition
+                                    }, 800);
+                                }
+                            }, 100);
                         }
                         
                         // Обновляем номер страницы
@@ -188,86 +197,42 @@
                         
                         // Проверяем, остались ли еще страницы
                         if (nextPage >= maxPages) {
-                            $button.fadeOut(300);
-                            if ($messageDiv.length) {
-                                $messageDiv.html('<div class="message-info">Все новости загружены</div>').fadeIn();
-                            }
+                            // Скрываем кнопку и показываем сообщение
+                            $button.fadeOut(300, function() {
+                                if ($messageDiv.length) {
+                                    $messageDiv.html('<div class="message message-info">Все новости загружены</div>').fadeIn();
+                                }
+                            });
                         } else {
                             // Восстанавливаем кнопку
-                            $btnText.show();
-                            $spinner.hide();
-                            $button.prop('disabled', false).css('opacity', '1');
+                            $button.removeClass('loading').prop('disabled', false);
                         }
                         
                     } else {
                         // Обработка ошибки от сервера
-                        $btnText.text('Ошибка загрузки').show();
-                        $spinner.hide();
-                        $button.prop('disabled', false).css('opacity', '1');
+                        $button.removeClass('loading').prop('disabled', false);
                         
                         if ($messageDiv.length) {
-                            $messageDiv.html('<div class="message-error">Ошибка при загрузке</div>').fadeIn();
+                            $messageDiv.html('<div class="message message-error">' + (response.data || 'Ошибка загрузки') + '</div>').fadeIn();
                         }
                     }
                 },
                 error: function(xhr, status, error) {
                     console.error('Load more error:', error);
                     
-                    $btnText.text('Попробовать еще раз').show();
-                    $spinner.hide();
-                    $button.prop('disabled', false).css('opacity', '1');
+                    // Восстанавливаем кнопку
+                    $button.removeClass('loading').prop('disabled', false);
                     
                     if ($messageDiv.length) {
-                        $messageDiv.html('<div class="message-warning">Ошибка сети. Попробуйте еще раз.</div>').fadeIn();
+                        $messageDiv.html('<div class="message message-warning">Ошибка сети. Попробуйте еще раз.</div>').fadeIn();
                     }
                 }
             });
         });
     }
+
     
-    /**
-     * Копирование стилей с кнопки "Заявка на оборудование"
-     */
-    function copyButtonStyles() {
-        var $sourceBtn = $('#requestBtn');
-        var $targetBtn = $('#load-more-news');
-        
-        if ($sourceBtn.length && $targetBtn.length) {
-            // 1. Сначала скопируем классы
-            var sourceClasses = $sourceBtn.attr('class');
-            if (sourceClasses) {
-                $targetBtn.attr('class', sourceClasses + ' load-more-button');
-            }
-            
-            // 2. Затем скопируем стили (для точности)
-            setTimeout(function() {
-                var sourceStyles = window.getComputedStyle($sourceBtn[0]);
-                
-                var stylesToCopy = [
-                    'background-color', 'color', 'border', 'border-radius',
-                    'padding', 'font-size', 'font-weight', 'font-family',
-                    'text-transform', 'letter-spacing', 'line-height',
-                    'box-shadow', 'cursor', 'min-width', 'min-height',
-                    'transition', 'text-decoration', 'outline'
-                ];
-                
-                stylesToCopy.forEach(function(style) {
-                    var value = sourceStyles.getPropertyValue(style);
-                    if (value && value !== 'none' && value !== '0px') {
-                        $targetBtn.css(style, value);
-                    }
-                });
-                
-                // 3. Центрируем кнопку
-                $targetBtn.css({
-                    'display': 'inline-block',
-                    'margin': '0 auto'
-                });
-                
-                console.log('✅ Стили кнопки применены');
-            }, 50); // Маленькая задержка для гарантии
-        }
-    }
+    
     
     /**
      * Функции корзины WooCommerce
