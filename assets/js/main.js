@@ -128,11 +128,7 @@
             // Показываем состояние загрузки
             $btnText.hide();
             $spinner.show();
-            $button.prop('disabled', true);
-            
-            if ($messageDiv.length) {
-                $messageDiv.hide().removeClass('alert-danger alert-warning alert-info alert-success');
-            }
+            $button.prop('disabled', true).addClass('loading');
             
             // Собираем данные для AJAX
             var ajaxData = {
@@ -165,20 +161,24 @@
                         var $newsGrid = $('#news-grid');
                         if ($newsGrid.length) {
                             var $newContent = $(response.data.html);
+                            
+                            // Добавляем класс для новых элементов
+                            $newContent.addClass('newly-loaded');
+                            
+                            // Добавляем в контейнер
                             $newsGrid.append($newContent);
                             
-                            // Плавное появление новых элементов
-                            $newContent.css({
-                                'opacity': '0',
-                                'transform': 'translateY(20px)'
-                            });
+                            // Инициализируем ленивую загрузку для новых изображений
+                            if (typeof imageObserver !== 'undefined') {
+                                $newContent.find('img[data-src]').each(function() {
+                                    imageObserver.observe(this);
+                                });
+                            }
                             
+                            // Плавное появление через CSS анимацию
                             setTimeout(function() {
-                                $newContent.animate({
-                                    'opacity': '1',
-                                    'transform': 'translateY(0)'
-                                }, 300);
-                            }, 10);
+                                $newContent.removeClass('newly-loaded').addClass('loaded');
+                            }, 100);
                         }
                         
                         // Обновляем номер страницы
@@ -186,32 +186,29 @@
                         
                         // Проверяем, остались ли еще страницы
                         if (nextPage >= maxPages) {
-                            $button.fadeOut();
-                            if ($messageDiv.length) {
-                                $messageDiv.text('Все новости загружены').addClass('alert-info').fadeIn();
-                            }
+                            $button.fadeOut(300, function() {
+                                if ($messageDiv.length) {
+                                    $messageDiv.html('<div class="alert alert-info">Все новости загружены</div>').fadeIn();
+                                }
+                            });
                         } else {
                             // Сбрасываем состояние кнопки
                             $btnText.show();
                             $spinner.hide();
-                            $button.prop('disabled', false);
+                            $button.prop('disabled', false).removeClass('loading');
                         }
                         
-                        // Прокручиваем к новым элементам
-                        if ($newContent && $newContent.length) {
-                            $('html, body').animate({
-                                scrollTop: $newContent.first().offset().top - 100
-                            }, 800);
-                        }
+                        // Обновляем счетчик (если есть)
+                        updateLoadedCount(nextPage);
                         
                     } else {
                         // Обработка ошибки
                         $btnText.text('Ошибка загрузки').show();
                         $spinner.hide();
-                        $button.prop('disabled', false);
+                        $button.prop('disabled', false).removeClass('loading');
                         
                         if ($messageDiv.length) {
-                            $messageDiv.text('Произошла ошибка при загрузке').addClass('alert-danger').fadeIn();
+                            $messageDiv.html('<div class="alert alert-danger">' + response.data + '</div>').fadeIn();
                         }
                     }
                 },
@@ -220,14 +217,25 @@
                     
                     $btnText.text('Попробовать еще раз').show();
                     $spinner.hide();
-                    $button.prop('disabled', false);
+                    $button.prop('disabled', false).removeClass('loading');
                     
                     if ($messageDiv.length) {
-                        $messageDiv.text('Ошибка сети. Попробуйте еще раз.').addClass('alert-warning').fadeIn();
+                        $messageDiv.html('<div class="alert alert-warning">Ошибка сети. Попробуйте еще раз.</div>').fadeIn();
                     }
                 }
             });
         });
+        
+        // Функция обновления счетчика загруженных постов
+        function updateLoadedCount(page) {
+            var $counter = $('.loaded-count');
+            if (!$counter.length) {
+                // Создаем счетчик если его нет
+                $loadMoreBtn.before('<div class="loaded-count text-muted small mt-2">Загружено страниц: ' + page + '</div>');
+            } else {
+                $counter.text('Загружено страниц: ' + page);
+            }
+        }
     }
     
     /**
