@@ -651,4 +651,70 @@ function get_adjacent_products($product_id, $category_id, $direction = 'next') {
         return $query->found_posts;
     }
 
+// Добавьте этот код в functions.php
+
+// AJAX для загрузки новостей
+add_action('wp_ajax_load_more_news', 'severcon_load_more_news');
+add_action('wp_ajax_nopriv_load_more_news', 'severcon_load_more_news');
+
+function severcon_load_more_news() {
+    // Проверка безопасности
+    check_ajax_referer('load_more_nonce', 'nonce');
+    
+    $page = isset($_POST['page']) ? intval($_POST['page']) : 1;
+    $category = isset($_POST['category']) ? intval($_POST['category']) : '';
+    $tag = isset($_POST['tag']) ? intval($_POST['tag']) : '';
+    
+    // Аргументы для нового запроса
+    $args = array(
+        'post_type'      => 'post',
+        'post_status'    => 'publish',
+        'posts_per_page' => get_option('posts_per_page'),
+        'paged'          => $page,
+    );
+    
+    // Если есть категория
+    if (!empty($category)) {
+        $args['cat'] = $category;
+    }
+    
+    // Если есть тег
+    if (!empty($tag)) {
+        $args['tag_id'] = $tag;
+    }
+    
+    $query = new WP_Query($args);
+    
+    if ($query->have_posts()) :
+        ob_start();
+        
+        while ($query->have_posts()) : $query->the_post();
+            get_template_part('template-parts/content', get_post_type());
+        endwhile;
+        
+        $output = ob_get_clean();
+        
+        wp_send_json_success(array(
+            'html' => $output,
+            'max_pages' => $query->max_num_pages,
+            'current_page' => $page
+        ));
+    else :
+        wp_send_json_error('Нет больше новостей');
+    endif;
+    
+    wp_die();
+}
+
+// Локализация скриптов
+add_action('wp_enqueue_scripts', 'severcon_localize_ajax');
+function severcon_localize_ajax() {
+    wp_localize_script('main', 'severcon_ajax', array(
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('load_more_nonce'),
+        'loading_text' => 'Загрузка...',
+        'load_more_text' => 'Показать еще'
+    ));
+}
+
 ?>
