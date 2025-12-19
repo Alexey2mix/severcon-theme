@@ -1,63 +1,49 @@
 <?php
 /**
- * Шаблон архива
+ * The template for displaying archive pages
+ *
+ * @package severcon
  */
-get_header(); ?>
 
-<div class="container">
-    <div class="archive-content">
-        <header class="archive-header">
-            <h1 class="archive-title">
+get_header();
+?>
+
+<main id="primary" class="site-main">
+    <div class="container">
+        <?php if (have_posts()) : ?>
+            <header class="page-header">
                 <?php
-                if (is_category()) {
-                    single_cat_title();
-                } elseif (is_tag()) {
-                    single_tag_title();
-                } elseif (is_author()) {
-                    the_author();
-                } elseif (is_date()) {
-                    the_archive_title();
-                } else {
-                    post_type_archive_title();
-                }
+                the_archive_title('<h1 class="page-title">', '</h1>');
+                the_archive_description('<div class="archive-description">', '</div>');
                 ?>
-            </h1>
-            <?php the_archive_description(); ?>
-        </header>
-        
-        <div class="posts-grid">
-            <?php if (have_posts()) : ?>
-                <?php while (have_posts()) : the_post(); ?>
-                    <article class="post-card">
-                        <?php if (has_post_thumbnail()) : ?>
-                            <div class="post-thumbnail">
-                                <a href="<?php the_permalink(); ?>">
-                                    <?php the_post_thumbnail('severcon-thumbnail'); ?>
-                                </a>
-                            </div>
-                        <?php endif; ?>
-                        
-                        <div class="post-content">
-                            <h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
-                            <div class="post-meta">
-                                <span class="post-date"><?php echo get_the_date(); ?></span>
-                            </div>
-                            <div class="post-excerpt">
-                                <?php the_excerpt(); ?>
-                            </div>
-                            <a href="<?php the_permalink(); ?>" class="read-more">Подробнее</a>
-                        </div>
-                    </article>
-                <?php endwhile; ?>
-            <?php else : ?>
-                <p><?php _e('Записи не найдены.', 'severcon'); ?></p>
-            <?php endif; ?>
-        </div>
-        
-        <div class="pagination">
-            <?php the_posts_pagination(); ?>
-        </div>
-    </div>
-</div>
+            </header>
 
-<?php get_footer(); ?>
+            <div class="news-grid" id="news-grid">
+                <?php
+                while (have_posts()) : the_post();
+                    get_template_part('template-parts/content', get_post_type());
+                endwhile;
+                ?>
+            </div>
+
+            <?php if ($wp_query->max_num_pages > 1) : ?>
+                <div class="load-more-wrapper">
+                    <button id="load-more-news" class="btn btn-primary" 
+                            data-page="1" 
+                            data-max-pages="<?php echo $wp_query->max_num_pages; ?>">
+                        Показать еще
+                    </button>
+                    <div class="loading-spinner" style="display: none;">
+                        Загрузка...
+                    </div>
+                </div>
+            <?php endif; ?>
+
+        <?php else : ?>
+            <?php get_template_part('template-parts/content', 'none'); ?>
+        <?php endif; ?>
+    </div>
+</main>
+
+<?php
+get_footer();
