@@ -6289,3 +6289,103 @@ body.modal-open {
         transform: translateY(0);
     }
 }
+
+/* ==================== SEVERCON BUTTON BASE STYLES ==================== */
+.severcon-button {
+    /* ОСНОВНЫЕ СВОЙСТВА - ПОДСТАВЬТЕ ВАШИ ЗНАЧЕНИЯ! */
+    display: inline-block;
+    padding: 12px 30px; /* Ваши отступы */
+    background-color: #007cba; /* Ваш цвет фона */
+    color: #ffffff; /* Ваш цвет текста */
+    border: 2px solid #007cba; /* Ваш цвет рамки */
+    border-radius: 4px; /* Ваша скругленность */
+    
+    /* Текст */
+    font-size: 16px; /* Ваш размер шрифта */
+    font-weight: 600; /* Ваша толщина */
+    font-family: inherit;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+    
+    /* Взаимодействие */
+    cursor: pointer;
+    user-select: none;
+    vertical-align: middle;
+    
+    /* Эффекты */
+    box-shadow: 0 4px 6px rgba(0, 124, 186, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Ховер */
+.severcon-button:hover {
+    background-color: #005a87;
+    border-color: #005a87;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 124, 186, 0.3);
+}
+
+/* Отключенное состояние */
+.severcon-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* ==================== LOAD MORE SPECIFIC ==================== */
+.load-more-container {
+    text-align: center;
+    margin: 40px 0;
+    padding: 20px 0;
+    width: 100%;
+    clear: both;
+}
+
+/* Спиннер - всегда скрыт по умолчанию */
+.button-spinner {
+    display: none;
+    margin-left: 8px;
+}
+
+/* Состояние загрузки - показывает спиннер */
+.severcon-button.loading {
+    color: transparent !important; /* Скрываем текст */
+    pointer-events: none;
+}
+
+.severcon-button.loading .button-spinner {
+    display: inline-block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    color: #ffffff; /* Цвет спиннера - белый на синем фоне */
+}
+
+/* Когда новости закончились - скрываем кнопку */
+.load-more-container.hidden {
+    display: none;
+}
+
+/* Сообщения */
+.load-more-message {
+    margin-top: 15px;
+    min-height: 20px;
+}
+
+.load-more-message .message {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.message-info {
+    background: #e7f3ff;
+    color: #0066cc;
+    border: 1px solid #b3d7ff;
+}
