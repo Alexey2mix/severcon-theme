@@ -5744,3 +5744,64 @@ body.modal-open {
         transform: translateY(20px);
     }
 }
+
+
+/* ==================== BASIC POST STYLES ==================== */
+
+.news-grid article {
+    background: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+    transition: all 0.3s ease;
+}
+
+.news-grid article:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.entry-title {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+.entry-title a {
+    color: #333;
+    text-decoration: none;
+}
+
+.entry-title a:hover {
+    color: #007cba;
+}
+
+.entry-meta {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.entry-summary {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.read-more {
+    display: inline-block;
+    color: #007cba;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 5px 0;
+}
+
+.read-more:hover {
+    text-decoration: underline;
+}
