@@ -29,20 +29,19 @@ get_header();
             </div>
 
             <?php if ($wp_query->max_num_pages > 1) : ?>
-                <div class="load-more-wrapper" style="text-align: center; margin: 40px 0;">
+                <div class="load-more-container">
                     <button id="load-more-news" 
-                            class="btn btn-primary" <!-- Точные классы вашей кнопки -->
+                            class="severcon-button load-more-button"
                             data-page="<?php echo $current_page; ?>" 
                             data-max-pages="<?php echo $max_pages; ?>"
                             data-category="<?php echo is_category() ? get_queried_object_id() : ''; ?>"
-                            data-tag="<?php echo is_tag() ? get_queried_object_id() : ''; ?>"
-                            style="display: inline-block; margin: 0 auto;"> <!-- Центрирование -->
+                            data-tag="<?php echo is_tag() ? get_queried_object_id() : ''; ?>">
                         <span class="button-text">Показать еще</span>
-                        <span class="button-spinner" style="display: none;">
+                        <span class="button-spinner">
                             <i class="fas fa-spinner fa-spin"></i>
                         </span>
                     </button>
-                    <div class="load-more-message" style="margin-top: 10px;"></div>
+                    <div class="load-more-message"></div>
                 </div>
             <?php endif; ?>
 
