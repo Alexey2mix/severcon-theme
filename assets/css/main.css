@@ -5963,3 +5963,50 @@ body.modal-open {
 .small {
     font-size: 0.875em;
 }
+
+/* ==================== LOAD MORE BUTTON - CUSTOM STYLES ==================== */
+
+#load-more-news {
+    /* Эти стили будут перезаписаны JavaScript */
+    /* но служат как fallback */
+    display: inline-block;
+    padding: 12px 30px;
+    background: #007cba;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+#load-more-news:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+#load-more-news:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.button-spinner {
+    margin-left: 8px;
+}
+
+.button-spinner .fa-spinner {
+    margin-right: 5px;
+}
+
+/* Сообщения */
+.load-more-message .message-info {
+    background: #e7f3ff;
+    color: #0066cc;
+    padding: 8px 15px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 14px;
+}
