@@ -5745,7 +5745,6 @@ body.modal-open {
     }
 }
 
-
 /* ==================== BASIC POST STYLES ==================== */
 
 .news-grid article {
@@ -5804,4 +5803,32 @@ body.modal-open {
 
 .read-more:hover {
     text-decoration: underline;
+}
+
+/* ==================== POST WITH IMAGE ==================== */
+
+.post-thumbnail {
+    margin-bottom: 15px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.post-image {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+    transition: transform 0.3s ease;
+}
+
+.news-item:hover .post-image {
+    transform: scale(1.02);
+}
+
+.post-content {
+    padding: 0 5px;
+}
+
+.entry-meta i {
+    margin-right: 5px;
+    color: #888;
 }
