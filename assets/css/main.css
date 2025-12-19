@@ -5833,7 +5833,6 @@ body.modal-open {
     color: #888;
 }
 
-
 /* Дополнительные стили для кнопки "Показать еще" */
 #load-more-news {
     min-width: 180px;
@@ -5857,4 +5856,110 @@ body.modal-open {
     padding: 8px 15px;
     border-radius: 4px;
     font-size: 14px;
+}
+
+/* ==================== LOAD MORE BUTTON STYLES ==================== */
+
+#load-more-news {
+    /* Базовые стили Bootstrap .btn */
+    display: inline-block;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    background-color: #0d6efd; /* Bootstrap primary blue */
+    border: 1px solid #0d6efd;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    transition: color 0.15s ease-in-out, 
+                background-color 0.15s ease-in-out, 
+                border-color 0.15s ease-in-out, 
+                box-shadow 0.15s ease-in-out;
+    
+    /* Дополнительные стили */
+    min-width: 180px;
+    position: relative;
+}
+
+#load-more-news:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+}
+
+#load-more-news:focus {
+    color: #fff;
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(49, 132, 253, 0.5);
+}
+
+#load-more-news:disabled,
+#load-more-news.disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+/* Спиннер Bootstrap */
+.spinner-border {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    vertical-align: -0.125em;
+    border: 0.15em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spinner-border 0.75s linear infinite;
+}
+
+.d-none {
+    display: none !important;
+}
+
+.ms-2 {
+    margin-left: 0.5rem !important;
+}
+
+@keyframes spinner-border {
+    to { transform: rotate(360deg); }
+}
+
+/* Стили для сообщений */
+.alert {
+    position: relative;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+}
+
+.alert-info {
+    color: #055160;
+    background-color: #cff4fc;
+    border-color: #b6effb;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+}
+
+.mt-2 {
+    margin-top: 0.5rem !important;
+}
+
+.small {
+    font-size: 0.875em;
 }
