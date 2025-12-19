@@ -20,22 +20,35 @@ get_header();
 
             <div class="news-grid" id="news-grid">
                 <?php
+                $current_page = max(1, get_query_var('paged'));
                 while (have_posts()) : the_post();
+                    // Используем ваш шаблон для постов
                     get_template_part('template-parts/content', get_post_type());
                 endwhile;
                 ?>
             </div>
 
-            <?php if ($wp_query->max_num_pages > 1) : ?>
-                <div class="load-more-wrapper">
-                    <button id="load-more-news" class="btn btn-primary" 
-                            data-page="1" 
-                            data-max-pages="<?php echo $wp_query->max_num_pages; ?>">
-                        Показать еще
+            <?php 
+            // Определяем максимальное количество страниц
+            $max_pages = $wp_query->max_num_pages;
+            
+            // Показываем кнопку только если есть еще страницы
+            if ($max_pages > 1) : 
+            ?>
+                <div class="load-more-wrapper text-center mt-4">
+                    <button id="load-more-news" 
+                            class="btn btn-primary" 
+                            data-page="<?php echo $current_page; ?>" 
+                            data-max-pages="<?php echo $max_pages; ?>"
+                            data-category="<?php echo is_category() ? get_queried_object_id() : ''; ?>"
+                            data-tag="<?php echo is_tag() ? get_queried_object_id() : ''; ?>"
+                            data-post-type="<?php echo get_post_type(); ?>">
+                        <span class="btn-text">Показать еще</span>
+                        <span class="loading-spinner" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i> Загрузка...
+                        </span>
                     </button>
-                    <div class="loading-spinner" style="display: none;">
-                        Загрузка...
-                    </div>
+                    <div class="load-more-message mt-2" style="display: none;"></div>
                 </div>
             <?php endif; ?>
 
