@@ -31,13 +31,15 @@ get_header();
             <?php if ($wp_query->max_num_pages > 1) : ?>
                 <div class="load-more-wrapper text-center mt-5 mb-5">
                     <button id="load-more-news" 
-                            class="btn btn-primary"
+                            class="custom-button" <!-- Убрали btn btn-primary -->
                             data-page="<?php echo $current_page; ?>" 
                             data-max-pages="<?php echo $max_pages; ?>"
                             data-category="<?php echo is_category() ? get_queried_object_id() : ''; ?>"
                             data-tag="<?php echo is_tag() ? get_queried_object_id() : ''; ?>">
-                        <span class="btn-text">Показать еще</span>
-                        <span class="spinner-border spinner-border-sm ms-2 d-none" aria-hidden="true"></span>
+                        <span class="button-text">Показать еще</span>
+                        <span class="button-spinner" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
                     </button>
                     <div class="load-more-message mt-2 small"></div>
                 </div>
