@@ -6075,3 +6075,170 @@ body.modal-open {
     border-radius: 4px;
     display: inline-block;
 }
+
+/* ==================== SEVERCON BUTTON STYLES ==================== */
+
+/* Основные стили для ВСЕХ кнопок сайта */
+.severcon-button {
+    /* Основные свойства */
+    display: inline-block;
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    
+    /* Цвета - настройте под вашу кнопку "Заявка" */
+    background-color: #007cba; /* Основной цвет фона */
+    color: #ffffff; /* Цвет текста */
+    border-color: #007cba; /* Цвет рамки */
+    
+    /* Эффекты */
+    box-shadow: 0 4px 6px rgba(0, 124, 186, 0.2);
+    
+    /* Текст */
+    font-family: inherit;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+/* Ховер состояние */
+.severcon-button:hover {
+    background-color: #005a87; /* Темнее на 20% */
+    border-color: #005a87;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 124, 186, 0.3);
+}
+
+/* Активное состояние (при нажатии) */
+.severcon-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 124, 186, 0.2);
+}
+
+/* Заблокированное состояние */
+.severcon-button:disabled,
+.severcon-button.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Фокус состояние (для доступности) */
+.severcon-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 124, 186, 0.3);
+}
+
+/* ==================== LOAD MORE SPECIFIC STYLES ==================== */
+
+.load-more-container {
+    text-align: center;
+    margin: 50px 0;
+    padding: 20px 0;
+    width: 100%;
+    clear: both;
+}
+
+.load-more-button {
+    min-width: 180px;
+    position: relative;
+}
+
+/* Спиннер внутри кнопки */
+.button-spinner {
+    display: none;
+    margin-left: 8px;
+}
+
+.button-spinner .fa-spinner {
+    margin-right: 5px;
+}
+
+/* Состояние загрузки */
+.load-more-button.loading .button-text {
+    display: none;
+}
+
+.load-more-button.loading .button-spinner {
+    display: inline-block;
+}
+
+/* Сообщения */
+.load-more-message {
+    margin-top: 15px;
+    font-size: 14px;
+    min-height: 20px;
+}
+
+.load-more-message .message {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.message-info {
+    background-color: #e7f3ff;
+    color: #0066cc;
+    border: 1px solid #b3d7ff;
+}
+
+.message-success {
+    background-color: #e7f7ef;
+    color: #2d8f5d;
+    border: 1px solid #b8e6cf;
+}
+
+.message-warning {
+    background-color: #fff8e6;
+    color: #b38c00;
+    border: 1px solid #ffe699;
+}
+
+.message-error {
+    background-color: #ffe6e6;
+    color: #cc0000;
+    border: 1px solid #ffb3b3;
+}
+
+/* ==================== АДАПТИВНОСТЬ ==================== */
+
+@media (max-width: 768px) {
+    .severcon-button {
+        padding: 10px 25px;
+        font-size: 15px;
+    }
+    
+    .load-more-button {
+        min-width: 160px;
+    }
+    
+    .load-more-container {
+        margin: 40px 0;
+        padding: 15px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .severcon-button {
+        padding: 9px 20px;
+        font-size: 14px;
+        width: 100%;
+        max-width: 280px;
+    }
+    
+    .load-more-container {
+        margin: 30px 0;
+        padding: 10px 0;
+    }
+}
