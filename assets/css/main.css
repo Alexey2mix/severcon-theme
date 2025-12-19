@@ -6389,3 +6389,173 @@ body.modal-open {
     color: #0066cc;
     border: 1px solid #b3d7ff;
 }
+
+/* ==================== LOAD MORE BUTTON - FIX ONLY ==================== */
+/* ДОБАВЬТЕ ЭТО В САМЫЙ КОНЕЦ ВАШЕГО ОРИГИНАЛЬНОГО main.css */
+
+.load-more-container {
+    text-align: center;
+    margin: var(--spacing-xxl) 0 var(--spacing-xl) 0;
+    padding: 30px 0;
+    width: 100%;
+    clear: both;
+}
+
+#load-more-news {
+    /* Используем стили как у .btn-primary */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 35px;
+    min-width: 200px;
+    
+    /* Цвета как у ваших кнопок - ВАЖНО: используем !important чтобы перебить старые стили */
+    background-color: var(--accent-color) !important;
+    color: var(--white) !important;
+    border: 2px solid var(--accent-color) !important;
+    
+    /* Текст */
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    font-family: var(--font-main) !important;
+    line-height: 1.5;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    
+    /* Эффекты */
+    border-radius: 0 !important;
+    cursor: pointer;
+    transition: all var(--transition-normal) !important;
+    position: relative;
+    box-shadow: var(--shadow-md) !important;
+}
+
+#load-more-news:hover:not(:disabled) {
+    background-color: var(--accent-hover) !important;
+    border-color: var(--accent-hover) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: var(--shadow-lg) !important;
+}
+
+#load-more-news:active:not(:disabled) {
+    transform: translateY(0) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+#load-more-news:disabled {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Спиннер внутри кнопки */
+.button-spinner {
+    display: none;
+}
+
+.button-spinner .fa-spinner {
+    color: var(--white);
+    font-size: 16px;
+}
+
+/* Состояние загрузки */
+#load-more-news.loading {
+    color: transparent !important;
+    pointer-events: none;
+}
+
+#load-more-news.loading .button-spinner {
+    display: inline-block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+}
+
+/* Когда все новости загружены */
+.load-more-container.hidden {
+    display: none;
+}
+
+/* Сообщения */
+.load-more-message {
+    margin-top: 15px;
+    min-height: 20px;
+}
+
+.load-more-message .message {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 0;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: var(--shadow-sm);
+}
+
+.message-info {
+    background-color: #e7f7ff;
+    color: #0066cc;
+    border: 1px solid #b3e0ff;
+}
+
+.message-error {
+    background-color: #ffe6e6;
+    color: #cc0000;
+    border: 1px solid #ffb3b3;
+}
+
+.message-warning {
+    background-color: #fff8e6;
+    color: #b38c00;
+    border: 1px solid #ffe699;
+}
+
+/* Анимация для новых постов */
+.news-archive-item.newly-loaded {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: slideInUp 0.5s ease forwards;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    #load-more-news {
+        padding: 12px 28px !important;
+        min-width: 180px;
+        font-size: 15px !important;
+    }
+    
+    .load-more-container {
+        margin: 40px 0 30px !important;
+        padding: 20px 0 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #load-more-news {
+        padding: 10px 25px !important;
+        min-width: 160px;
+        font-size: 14px !important;
+        width: 100%;
+        max-width: 280px;
+    }
+    
+    .load-more-container {
+        margin: 30px 0 20px !important;
+        padding: 15px 0 !important;
+    }
+}
