@@ -31,12 +31,12 @@ get_header();
             <?php if ($wp_query->max_num_pages > 1) : ?>
                 <div class="load-more-container">
                     <button id="load-more-news" 
-                            class="severcon-button load-more-button"
-                            data-page="<?php echo $current_page; ?>" 
-                            data-max-pages="<?php echo $max_pages; ?>"
+                            class="severcon-button"
+                            data-page="<?php echo max(1, get_query_var('paged')); ?>" 
+                            data-max-pages="<?php echo $wp_query->max_num_pages; ?>"
                             data-category="<?php echo is_category() ? get_queried_object_id() : ''; ?>"
                             data-tag="<?php echo is_tag() ? get_queried_object_id() : ''; ?>">
-                        <span class="button-text">Показать еще</span>
+                        Показать еще
                         <span class="button-spinner">
                             <i class="fas fa-spinner fa-spin"></i>
                         </span>
