@@ -128,13 +128,26 @@ if (!function_exists('severcon_load_more_news')) {
     add_action('wp_ajax_load_more_news', 'severcon_load_more_news');
     add_action('wp_ajax_nopriv_load_more_news', 'severcon_load_more_news');
     
-    function severcon_load_more_news() {
+     function severcon_load_more_news() {
+        // === ДОБАВЬТЕ ЭТО ДЛЯ ОТЛАДКИ ===
+        if (!defined('DOING_AJAX') || !DOING_AJAX) {
+            wp_die('Этот скрипт должен вызываться через AJAX');
+        }
+        
+        // Логируем полученные данные
+        error_log('=== AJAX LOAD MORE CALLED ===');
+        error_log('POST data: ' . print_r($_POST, true));
+        
         // Проверка безопасности
-        check_ajax_referer('severcon_load_more_nonce', 'nonce');
+        if (!check_ajax_referer('severcon_load_more_nonce', 'nonce', false)) {
+            error_log('Nonce verification failed');
+            wp_send_json_error('Security check failed');
+            wp_die();
+        }
         
         $page = isset($_POST['page']) ? intval($_POST['page']) : 1;
-        $category = isset($_POST['category']) ? intval($_POST['category']) : '';
-        $tag = isset($_POST['tag']) ? intval($_POST['tag']) : '';
+        error_log('Requested page: ' . $page);
+        // === КОНЕЦ ОТЛАДКИ ===
         
         // Аргументы для нового запроса
         $args = array(
@@ -145,26 +158,36 @@ if (!function_exists('severcon_load_more_news')) {
         );
         
         // Если есть категория
-        if (!empty($category)) {
-            $args['cat'] = $category;
+        if (!empty($_POST['category'])) {
+            $args['cat'] = intval($_POST['category']);
         }
         
         // Если есть тег
-        if (!empty($tag)) {
-            $args['tag_id'] = $tag;
+        if (!empty($_POST['tag'])) {
+            $args['tag_id'] = intval($_POST['tag']);
         }
         
         $query = new WP_Query($args);
+        
+        error_log('Query found ' . $query->found_posts . ' posts');
+        error_log('Max pages: ' . $query->max_num_pages);
         
         if ($query->have_posts()) :
             ob_start();
             
             while ($query->have_posts()) : $query->the_post();
-                // Используем стандартный шаблон для записей
-                get_template_part('template-parts/content', get_post_type());
+                // ДЛЯ ОТЛАДКИ: выведем что-то простое
+                echo '<article class="debug-post">';
+                echo '<h3>' . get_the_title() . '</h3>';
+                echo '<div>' . get_the_excerpt() . '</div>';
+                echo '</article>';
+                // Или используем ваш шаблон:
+                // get_template_part('template-parts/content', get_post_type());
             endwhile;
             
             $output = ob_get_clean();
+            
+            error_log('Generated HTML length: ' . strlen($output));
             
             wp_send_json_success(array(
                 'html' => $output,
@@ -172,11 +195,13 @@ if (!function_exists('severcon_load_more_news')) {
                 'current_page' => $page
             ));
         else :
+            error_log('No posts found');
             wp_send_json_error('Нет больше новостей');
         endif;
         
         wp_die();
-    }
+}
+
 }
 
 // WooCommerce совместимость
