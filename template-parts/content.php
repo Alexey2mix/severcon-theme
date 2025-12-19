@@ -1,46 +1,29 @@
 <?php
 /**
- * Template part for displaying posts
+ * Template part for displaying posts - Custom design for Severcon
  *
  * @package severcon
  */
 ?>
 
-<article id="post-<?php the_ID(); ?>" <?php post_class('news-item'); ?>>
-    
-    <?php if (has_post_thumbnail()) : ?>
-        <div class="post-thumbnail">
-            <a href="<?php the_permalink(); ?>">
-                <?php the_post_thumbnail('medium', array('class' => 'post-image')); ?>
-            </a>
-        </div>
-    <?php endif; ?>
-    
-    <div class="post-content">
-        <h3 class="entry-title">
-            <a href="<?php the_permalink(); ?>">
-                <?php the_title(); ?>
-            </a>
-        </h3>
+<div class="news-archive-item" data-post-id="<?php the_ID(); ?>">
+    <a href="<?php the_permalink(); ?>" class="news-archive-card">
         
-        <div class="entry-meta">
-            <span class="post-date">
-                <i class="far fa-calendar"></i> <?php echo get_the_date(); ?>
-            </span>
-            
-            <?php if (get_comments_number() > 0) : ?>
-                <span class="post-comments">
-                    <i class="far fa-comment"></i> <?php comments_number('0', '1', '%'); ?>
-                </span>
-            <?php endif; ?>
+        <?php if (has_post_thumbnail()) : ?>
+            <div class="news-archive-image">
+                <?php 
+                    the_post_thumbnail('full', array(
+                        'alt' => get_the_title()
+                    )); 
+                ?>
+            </div>
+        <?php endif; ?>
+        
+        <div class="news-archive-content">
+            <div class="news-date"><?php echo get_the_date('d.m.Y'); ?></div>
+            <h3 class="news-title"><?php the_title(); ?></h3>
+            <p class="news-excerpt"><?php echo get_the_excerpt(); ?></p>
         </div>
         
-        <div class="entry-summary">
-            <?php the_excerpt(); ?>
-        </div>
-        
-        <a href="<?php the_permalink(); ?>" class="read-more">
-            Читать далее <i class="fas fa-arrow-right"></i>
-        </a>
-    </div>
-</article>
+    </a>
+</div>
