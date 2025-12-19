@@ -5472,7 +5472,6 @@ body.modal-open {
     }
 }
 
-
 /* Load More стили */
 .load-more-wrapper {
     text-align: center;
@@ -5655,5 +5654,93 @@ body.modal-open {
     .news-grid {
         grid-template-columns: 1fr;
         gap: 15px;
+    }
+}
+
+/* ==================== LOAD MORE ENHANCED STYLES ==================== */
+
+#load-more-news.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+#load-more-news .loading-spinner {
+    display: none;
+}
+
+#load-more-news.loading .loading-spinner {
+    display: inline-block;
+}
+
+#load-more-news.loading .btn-text {
+    display: none;
+}
+
+/* Анимация появления новых постов */
+.newly-loaded {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.newly-loaded.loaded {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Задержка для каждого нового элемента */
+.news-grid article:nth-child(n) {
+    animation-delay: calc(var(--animation-order) * 0.1s);
+}
+
+/* Стили для счетчика */
+.loaded-count {
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+    margin-top: 10px;
+    padding: 5px 0;
+}
+
+/* Сообщения */
+.load-more-message .alert {
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 0;
+}
+
+.load-more-message .alert-info {
+    background-color: #e7f3ff;
+    color: #0066cc;
+    border: 1px solid #b3d7ff;
+}
+
+.load-more-message .alert-success {
+    background-color: #e7f7ef;
+    color: #2d8f5d;
+    border: 1px solid #b8e6cf;
+}
+
+.load-more-message .alert-warning {
+    background-color: #fff8e6;
+    color: #b38c00;
+    border: 1px solid #ffe699;
+}
+
+.load-more-message .alert-danger {
+    background-color: #ffe6e6;
+    color: #cc0000;
+    border: 1px solid #ffb3b3;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    #load-more-news {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .newly-loaded {
+        transform: translateY(20px);
     }
 }
