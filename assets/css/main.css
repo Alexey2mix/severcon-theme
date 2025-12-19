@@ -5832,3 +5832,29 @@ body.modal-open {
     margin-right: 5px;
     color: #888;
 }
+
+
+/* Дополнительные стили для кнопки "Показать еще" */
+#load-more-news {
+    min-width: 180px;
+    padding: 10px 25px;
+    font-weight: 600;
+    position: relative;
+}
+
+#load-more-news .spinner-border {
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.15em;
+}
+
+.load-more-wrapper {
+    padding: 30px 0;
+    border-top: 1px solid #eee;
+}
+
+.load-more-message .alert {
+    padding: 8px 15px;
+    border-radius: 4px;
+    font-size: 14px;
+}
