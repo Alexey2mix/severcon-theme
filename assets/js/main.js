@@ -103,10 +103,13 @@
         // Инициализация корзины
         initCart();
         
+        // Автоматическое копирование стилей с кнопки "Заявка на оборудование"
+        setTimeout(copyButtonStyles, 1000);
+        
     }); // document ready
     
     /**
-     * Load More functionality для новостей с Bootstrap стилями
+     * Load More functionality для новостей
      */
     function initLoadMore() {
         var $loadMoreBtn = $('#load-more-news');
@@ -156,34 +159,108 @@
                 data: ajaxData,
                 dataType: 'json',
                 success: function(response) {
-            if (response.success) {
-                // ... код добавления новостей ...
-                
-                // Обновляем номер страницы
-                $button.data('page', nextPage);
-                
-                // Проверяем, остались ли еще страницы
-                if (nextPage >= maxPages) {
-                    $button.fadeOut(300);
-                    if ($messageDiv.length) {
-                        $messageDiv.html('<div class="message-info">Все новости загружены</div>').fadeIn();
+                    if (response.success) {
+                        // ДОБАВЛЯЕМ НОВЫЕ ПОСТЫ НА СТРАНИЦУ
+                        var $newsGrid = $('#news-grid');
+                        if ($newsGrid.length) {
+                            // Добавляем HTML с новыми постами
+                            $newsGrid.append(response.data.html);
+                            
+                            // Анимация появления
+                            var $newItems = $newsGrid.children('.news-archive-item').slice(-response.data.html.split('news-archive-item').length + 1);
+                            $newItems.css({
+                                'opacity': '0',
+                                'transform': 'translateY(20px)'
+                            });
+                            
+                            setTimeout(function() {
+                                $newItems.animate({
+                                    'opacity': '1',
+                                    'transform': 'translateY(0)'
+                                }, 300);
+                            }, 50);
+                        }
+                        
+                        // Обновляем номер страницы
+                        $button.data('page', nextPage);
+                        
+                        // Проверяем, остались ли еще страницы
+                        if (nextPage >= maxPages) {
+                            $button.fadeOut(300);
+                            if ($messageDiv.length) {
+                                $messageDiv.html('<div class="message-info">Все новости загружены</div>').fadeIn();
+                            }
+                        } else {
+                            // Восстанавливаем кнопку
+                            $btnText.show();
+                            $spinner.hide();
+                            $button.prop('disabled', false).css('opacity', '1');
+                        }
+                        
+                    } else {
+                        // Обработка ошибки от сервера
+                        $btnText.text('Ошибка загрузки').show();
+                        $spinner.hide();
+                        $button.prop('disabled', false).css('opacity', '1');
+                        
+                        if ($messageDiv.length) {
+                            $messageDiv.html('<div class="message-error">Ошибка при загрузке</div>').fadeIn();
+                        }
                     }
-                } else {
-                    // Восстанавливаем кнопку
-                    $btnText.show();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Load more error:', error);
+                    
+                    $btnText.text('Попробовать еще раз').show();
                     $spinner.hide();
                     $button.prop('disabled', false).css('opacity', '1');
+                    
+                    if ($messageDiv.length) {
+                        $messageDiv.html('<div class="message-warning">Ошибка сети. Попробуйте еще раз.</div>').fadeIn();
+                    }
                 }
+            });
+        });
+    }
+    
+    /**
+     * Копирование стилей с кнопки "Заявка на оборудование"
+     */
+    function copyButtonStyles() {
+        var $sourceBtn = $('#requestBtn');
+        var $targetBtn = $('#load-more-news');
+        
+        if ($sourceBtn.length && $targetBtn.length) {
+            // Получаем вычисленные стили исходной кнопки
+            var sourceStyles = window.getComputedStyle($sourceBtn[0]);
+            
+            // Копируем ВСЕ важные стили
+            var stylesToCopy = [
+                'background-color', 'color', 'border', 'border-radius',
+                'padding', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
+                'margin', 'font-size', 'font-weight', 'font-family',
+                'text-transform', 'letter-spacing', 'line-height',
+                'box-shadow', 'text-shadow', 'cursor',
+                'display', 'width', 'height', 'min-width', 'min-height',
+                'transition', 'text-decoration', 'outline'
+            ];
+            
+            // Применяем стили к целевой кнопке
+            stylesToCopy.forEach(function(style) {
+                var value = sourceStyles.getPropertyValue(style);
+                if (value && value !== 'none' && value !== '0px') {
+                    $targetBtn.css(style, value);
+                }
+            });
+            
+            // Копируем классы
+            var sourceClasses = $sourceBtn.attr('class');
+            if (sourceClasses) {
+                $targetBtn.addClass(sourceClasses);
             }
-        },
-        error: function() {
-            // При ошибке
-            $btnText.text('Попробовать еще раз').show();
-            $spinner.hide();
-            $button.prop('disabled', false).css('opacity', '1');
+            
+            console.log('✅ Стили кнопки скопированы');
         }
-    });
-});
     }
     
     /**
@@ -347,70 +424,4 @@ checkWebPSupport(function(isSupported) {
     } else {
         document.documentElement.classList.add('no-webp');
     }
-});
-
-// Анимация появления новых элементов
-document.addEventListener('DOMContentLoaded', function() {
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px 50px 0px'
-    };
-    
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animated');
-            }
-        });
-    }, observerOptions);
-    
-    // Наблюдаем за новыми элементами
-    document.querySelectorAll('.newly-loaded').forEach(function(el) {
-        observer.observe(el);
-    });
-    
-
-// Автоматическое копирование стилей с кнопки "Заявка на оборудование"
-$(document).ready(function() {
-    function copyButtonStyles() {
-        var $sourceBtn = $('#requestBtn'); // Ваша кнопка "Заявка"
-        var $targetBtn = $('#load-more-news'); // Кнопка "Показать еще"
-        
-        if ($sourceBtn.length && $targetBtn.length) {
-            // Получаем вычисленные стили исходной кнопки
-            var sourceStyles = window.getComputedStyle($sourceBtn[0]);
-            
-            // Копируем ВСЕ важные стили
-            var stylesToCopy = [
-                'background-color', 'color', 'border', 'border-radius',
-                'padding', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
-                'margin', 'font-size', 'font-weight', 'font-family',
-                'text-transform', 'letter-spacing', 'line-height',
-                'box-shadow', 'text-shadow', 'cursor',
-                'display', 'width', 'height', 'min-width', 'min-height',
-                'transition', 'text-decoration'
-            ];
-            
-            // Применяем стили к целевой кнопке
-            stylesToCopy.forEach(function(style) {
-                var value = sourceStyles.getPropertyValue(style);
-                if (value && value !== 'none' && value !== '0px') {
-                    $targetBtn.css(style, value);
-                }
-            });
-            
-            // Копируем классы (кроме id)
-            var sourceClasses = $sourceBtn.attr('class');
-            if (sourceClasses) {
-                $targetBtn.addClass(sourceClasses);
-            }
-            
-            console.log('✅ Стили скопированы с кнопки "Заявка"');
-        }
-    }
-    
-    // Запускаем после полной загрузки страницы
-    setTimeout(copyButtonStyles, 1000);
-});
-    
 });
