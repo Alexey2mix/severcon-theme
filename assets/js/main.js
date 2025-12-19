@@ -1242,6 +1242,77 @@ function updateFilterGroupVisibility(attribute) {
             applySmartFilters(categoryId, 1);
         }
     }
+
+
+    // Добавьте этот код в main.js
+
+    // Load More functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const loadMoreBtn = document.getElementById('load-more-news');
+        
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const button = this;
+                const page = parseInt(button.getAttribute('data-page'));
+                const maxPages = parseInt(button.getAttribute('data-max-pages'));
+                const newsGrid = document.getElementById('news-grid');
+                const spinner = document.querySelector('.loading-spinner');
+                
+                // Показываем спиннер
+                button.style.display = 'none';
+                if (spinner) {
+                    spinner.style.display = 'block';
+                }
+                
+                // AJAX запрос
+                fetch(severcon_ajax.ajax_url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        action: 'load_more_news',
+                        nonce: severcon_ajax.nonce,
+                        page: page + 1,
+                        category: button.getAttribute('data-category') || '',
+                        tag: button.getAttribute('data-tag') || ''
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Добавляем новые посты
+                        newsGrid.innerHTML += data.data.html;
+                        
+                        // Обновляем номер страницы
+                        button.setAttribute('data-page', data.data.current_page);
+                        
+                        // Проверяем, есть ли еще страницы
+                        if (data.data.current_page >= data.data.max_pages) {
+                            button.style.display = 'none';
+                        } else {
+                            button.style.display = 'block';
+                            button.textContent = severcon_ajax.load_more_text;
+                        }
+                    } else {
+                        button.textContent = 'Нет больше новостей';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    button.textContent = 'Произошла ошибка';
+                })
+                .finally(() => {
+                    // Скрываем спиннер
+                    if (spinner) {
+                        spinner.style.display = 'none';
+                    }
+                });
+            });
+        }
+    });
     
     
     // ===== ОСНОВНАЯ ИНИЦИАЛИЗАЦИЯ =====
