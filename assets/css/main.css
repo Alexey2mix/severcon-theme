@@ -6242,3 +6242,50 @@ body.modal-open {
         padding: 10px 0;
     }
 }
+
+/* Анимация для новых постов */
+.newly-loaded {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.newly-loaded.loaded {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Стиль для каждого нового элемента с задержкой */
+.news-grid > .newly-loaded:nth-child(n) {
+    transition-delay: calc((var(--item-index, 0) * 0.1s));
+}
+
+/* Индикатор загрузки в кнопке */
+.load-more-button.loading {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+.load-more-button.loading .button-text {
+    display: none;
+}
+
+.load-more-button.loading .button-spinner {
+    display: inline-block;
+}
+
+/* Плавное появление кнопки */
+#load-more-news {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
