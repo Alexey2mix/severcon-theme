@@ -104,7 +104,9 @@
         initCart();
         
         // Автоматическое копирование стилей с кнопки "Заявка на оборудование"
-        setTimeout(copyButtonStyles, 1000);
+        $(window).on('load', function() {
+                copyButtonStyles();
+            });
         
     }); // document ready
     
@@ -231,35 +233,39 @@
         var $targetBtn = $('#load-more-news');
         
         if ($sourceBtn.length && $targetBtn.length) {
-            // Получаем вычисленные стили исходной кнопки
-            var sourceStyles = window.getComputedStyle($sourceBtn[0]);
-            
-            // Копируем ВСЕ важные стили
-            var stylesToCopy = [
-                'background-color', 'color', 'border', 'border-radius',
-                'padding', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
-                'margin', 'font-size', 'font-weight', 'font-family',
-                'text-transform', 'letter-spacing', 'line-height',
-                'box-shadow', 'text-shadow', 'cursor',
-                'display', 'width', 'height', 'min-width', 'min-height',
-                'transition', 'text-decoration', 'outline'
-            ];
-            
-            // Применяем стили к целевой кнопке
-            stylesToCopy.forEach(function(style) {
-                var value = sourceStyles.getPropertyValue(style);
-                if (value && value !== 'none' && value !== '0px') {
-                    $targetBtn.css(style, value);
-                }
-            });
-            
-            // Копируем классы
+            // 1. Сначала скопируем классы
             var sourceClasses = $sourceBtn.attr('class');
             if (sourceClasses) {
-                $targetBtn.addClass(sourceClasses);
+                $targetBtn.attr('class', sourceClasses + ' load-more-button');
             }
             
-            console.log('✅ Стили кнопки скопированы');
+            // 2. Затем скопируем стили (для точности)
+            setTimeout(function() {
+                var sourceStyles = window.getComputedStyle($sourceBtn[0]);
+                
+                var stylesToCopy = [
+                    'background-color', 'color', 'border', 'border-radius',
+                    'padding', 'font-size', 'font-weight', 'font-family',
+                    'text-transform', 'letter-spacing', 'line-height',
+                    'box-shadow', 'cursor', 'min-width', 'min-height',
+                    'transition', 'text-decoration', 'outline'
+                ];
+                
+                stylesToCopy.forEach(function(style) {
+                    var value = sourceStyles.getPropertyValue(style);
+                    if (value && value !== 'none' && value !== '0px') {
+                        $targetBtn.css(style, value);
+                    }
+                });
+                
+                // 3. Центрируем кнопку
+                $targetBtn.css({
+                    'display': 'inline-block',
+                    'margin': '0 auto'
+                });
+                
+                console.log('✅ Стили кнопки применены');
+            }, 50); // Маленькая задержка для гарантии
         }
     }
     
