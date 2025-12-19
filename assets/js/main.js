@@ -114,118 +114,72 @@
  */
     function initLoadMore() {
         var $loadMoreBtn = $('#load-more-news');
+        var $container = $loadMoreBtn.closest('.load-more-container');
         
-        if (!$loadMoreBtn.length) {
-            console.log('Load More button not found');
-            return;
-        }
+        if (!$loadMoreBtn.length) return;
         
         $loadMoreBtn.on('click', function(e) {
             e.preventDefault();
             
             var $button = $(this);
-            var $messageDiv = $button.siblings('.load-more-message');
+            var $container = $button.closest('.load-more-container');
+            var $messageDiv = $container.find('.load-more-message');
             
             var currentPage = parseInt($button.data('page'));
             var maxPages = parseInt($button.data('max-pages'));
             var nextPage = currentPage + 1;
             
-            // Показываем состояние загрузки через CSS класс
+            // Блокируем повторные нажатия
+            if ($button.hasClass('loading')) return;
+            
+            // Показываем состояние загрузки
             $button.addClass('loading').prop('disabled', true);
             
             // Скрываем предыдущие сообщения
-            if ($messageDiv.length) {
-                $messageDiv.hide().empty();
-            }
+            $messageDiv.hide().empty();
             
-            // Собираем данные для AJAX
-            var ajaxData = {
-                action: 'load_more_news',
-                nonce: severcon_ajax.nonce,
-                page: nextPage
-            };
-            
-            // Добавляем данные категории/тега если есть
-            var category = $button.data('category');
-            var tag = $button.data('tag');
-            
-            if (category) {
-                ajaxData.category = category;
-            }
-            
-            if (tag) {
-                ajaxData.tag = tag;
-            }
-            
-            // Отправляем AJAX запрос
+            // AJAX запрос
             $.ajax({
                 url: severcon_ajax.ajax_url,
                 type: 'POST',
-                data: ajaxData,
+                data: {
+                    action: 'load_more_news',
+                    nonce: severcon_ajax.nonce,
+                    page: nextPage,
+                    category: $button.data('category'),
+                    tag: $button.data('tag')
+                },
                 dataType: 'json',
                 success: function(response) {
                     if (response.success) {
-                        // Добавляем новые посты
+                        // 1. Добавляем новые посты
                         var $newsGrid = $('#news-grid');
                         if ($newsGrid.length) {
-                            var $newContent = $(response.data.html);
-                            
-                            // Добавляем класс для анимации
-                            $newContent.addClass('newly-loaded');
-                            
-                            // Добавляем в контейнер
-                            $newsGrid.append($newContent);
-                            
-                            // Анимация появления
-                            setTimeout(function() {
-                                $newContent.removeClass('newly-loaded').addClass('loaded');
-                                
-                                // Прокручиваем немного к новым элементам
-                                if ($newContent.length > 0) {
-                                    var firstNewItem = $newContent.first();
-                                    var scrollPosition = firstNewItem.offset().top - 100;
-                                    
-                                    $('html, body').animate({
-                                        scrollTop: scrollPosition
-                                    }, 800);
-                                }
-                            }, 100);
+                            $newsGrid.append(response.data.html);
                         }
                         
-                        // Обновляем номер страницы
+                        // 2. Обновляем номер страницы
                         $button.data('page', nextPage);
                         
-                        // Проверяем, остались ли еще страницы
+                        // 3. Проверяем, остались ли страницы
                         if (nextPage >= maxPages) {
-                            // Скрываем кнопку и показываем сообщение
-                            $button.fadeOut(300, function() {
-                                if ($messageDiv.length) {
-                                    $messageDiv.html('<div class="message message-info">Все новости загружены</div>').fadeIn();
-                                }
-                            });
+                            // НЕТ больше страниц - скрываем ВЕСЬ контейнер
+                            $container.addClass('hidden');
                         } else {
-                            // Восстанавливаем кнопку
+                            // ЕСТЬ еще страницы - восстанавливаем кнопку
                             $button.removeClass('loading').prop('disabled', false);
                         }
                         
                     } else {
-                        // Обработка ошибки от сервера
+                        // Ошибка от сервера
                         $button.removeClass('loading').prop('disabled', false);
-                        
-                        if ($messageDiv.length) {
-                            $messageDiv.html('<div class="message message-error">' + (response.data || 'Ошибка загрузки') + '</div>').fadeIn();
-                        }
+                        $messageDiv.html('<div class="message message-error">' + response.data + '</div>').show();
                     }
                 },
-                error: function(xhr, status, error) {
-                    console.error('Load more error:', error);
-                    
-                    // Восстанавливаем кнопку
+                error: function() {
+                    // Ошибка сети
                     $button.removeClass('loading').prop('disabled', false);
-                    
-                    if ($messageDiv.length) {
-                        $messageDiv.html('<div class="message message-warning">Ошибка сети. Попробуйте еще раз.</div>').fadeIn();
-                    }
+                    $messageDiv.html('<div class="message message-warning">Ошибка сети</div>').show();
                 }
             });
         });
