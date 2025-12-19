@@ -56,6 +56,8 @@ if (!function_exists('severcon_scripts')) {
         // Подключение Font Awesome
         wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', array(), '6.4.0');
         
+        wp_enqueue_style('bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css');
+        
         // Локализация для AJAX
         if (is_home() || is_archive() || is_category() || is_tag()) {
             wp_localize_script('severcon-main-js', 'severcon_ajax', array(
