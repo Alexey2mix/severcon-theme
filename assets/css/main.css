@@ -6010,3 +6010,68 @@ body.modal-open {
     margin-top: 10px;
     font-size: 14px;
 }
+
+/* ==================== LOAD MORE BUTTON - IMMEDIATE STYLES ==================== */
+
+#load-more-news {
+    /* Эти стили будут видны сразу, пока JS не скопирует точные */
+    display: inline-block !important;
+    margin: 0 auto !important;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+}
+
+.load-more-wrapper {
+    text-align: center !important;
+    margin: 40px 0 !important;
+    width: 100%;
+    clear: both;
+}
+
+/* Скрываем оригинальные классы, если они есть */
+#load-more-news.custom-button {
+    all: unset; /* Сбрасываем все стили */
+    display: inline-block !important;
+    margin: 0 auto !important;
+}
+
+/* Спиннер */
+.button-spinner {
+    margin-left: 8px;
+    display: none;
+}
+
+.button-spinner .fa-spinner {
+    margin-right: 5px;
+}
+
+/* Сообщения */
+.load-more-message {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.message-info {
+    background: #e7f3ff;
+    color: #0066cc;
+    padding: 8px 15px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.message-error {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 8px 15px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.message-warning {
+    background: #fff3cd;
+    color: #856404;
+    padding: 8px 15px;
+    border-radius: 4px;
+    display: inline-block;
+}
